@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+import "backup/v1/simple_lib.proto";
+
+message DBAccountProto {
+    sint32 mc_seqno = 1;
+    string address = 14;
+    sint64 tx_lt = 13;
+    bytes tx_hash = 12;
+    bool is_valid = 6;
+    bytes boc_stripped = 7;
+    optional bytes code_hash = 8;
+    repeated bytes data_lib_ids = 9;
+    optional bytes last_code_hash = 10;
+    repeated DBSimpleLibProto simple_libs = 11;
+}

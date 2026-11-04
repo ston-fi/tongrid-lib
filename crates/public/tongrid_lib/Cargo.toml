@@ -1,0 +1,45 @@
+[package]
+name = "tongrid_lib"
+description = "Complete same-name Tongrid crate re-exports"
+readme = "README.md"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+tongrid_account_handler = { path = "../../sync_handlers/account", version = "0.2.0" }
+tongrid_api_grpc_service_v3 = { path = "../../api/grpc_service_v3", version = "0.2.0" }
+tongrid_backup_handler = { path = "../../sync_handlers/backup", version = "0.2.0" }
+tongrid_block_handler = { path = "../../sync_handlers/block", version = "0.2.0" }
+tongrid_classifier_handler = { path = "../../sync_handlers/classifier", version = "0.2.0" }
+tongrid_client = { path = "../tongrid_client", version = "0.2.0" }
+tongrid_core = { path = "../../common/core", version = "0.2.0" }
+tongrid_db = { path = "../../common/db", version = "0.2.0" }
+tongrid_grpc_server = { path = "../../api/grpc_server", version = "0.2.0" }
+tongrid_jetton_handler = { path = "../../sync_handlers/jetton", version = "0.2.0" }
+tongrid_mem_store = { path = "../../api/mem_store", version = "0.2.0" }
+tongrid_proto = { path = "../tongrid_proto", version = "0.2.0" }
+tongrid_tda = { path = "../../common/tda", version = "0.2.0", features = ["test-support"] }
+tongrid_test_utils = { path = "../../common/test_utils", version = "0.2.0", features = ["scylla"] }
+tongrid_ton = { path = "../../common/ton", version = "0.2.0" }
+tongrid_verifier_handler = { path = "../../sync_handlers/verifier", version = "0.2.0" }
+
+[dev-dependencies]
+async-trait.workspace = true
+anyhow.workspace = true
+fs2.workspace = true
+stonfi_distributed_sync.workspace = true
+stonfi_metrics.workspace = true
+stonfi_scylla_client.workspace = true
+stonfi_sync_core.workspace = true
+tokio.workspace = true
+ton.workspace = true
+
+[[example]]
+name = "tongrid-sync-demo"
+path = "../../../examples/tongrid-sync-demo/main.rs"
+test = true

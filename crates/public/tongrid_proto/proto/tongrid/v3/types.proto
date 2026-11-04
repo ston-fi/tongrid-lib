@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+message BlockShard {
+  uint32 master_seqno = 1;
+  sint32 workchain = 2;
+  uint64 shard = 3;
+  uint32 seqno = 4;
+  bytes  root_hash = 5;
+  bytes  file_hash = 6;
+  uint64 end_lt = 8;
+  uint32 key_block_seqno = 9;
+  uint32 utime = 10;
+  optional bytes boc = 11;
+}
+
+message Tx {
+  uint32                mc_seqno = 1;
+  sint32                block_workchain = 2;
+  uint64                block_shard = 3;
+  uint32                block_seqno = 4;
+  string                address = 6;
+  bytes                 tx_hash = 7;
+  uint64                tx_lt = 8;
+  uint32                utime = 9;
+  bytes                 prev_tx_hash = 10;
+  uint64                prev_tx_lt = 11;
+  optional bytes        tx_boc = 12;
+  optional Msg          in_msg = 13;
+  repeated Msg          out_msgs = 14;
+  optional sint64       storage_fee = 15;
+  optional sint64       other_fee = 16;
+  optional sint64       total_fee = 17;
+  optional bytes        in_msg_hash = 18;
+  optional bytes        in_msg_hash_normalized = 19;
+  optional int32        exit_code = 20;
+  optional AccountState account_state = 21;
+  optional AccountParsed account_state_parsed = 22;
+}
+
+message Msg {
+  string         src = 1;
+  string         dst = 2;
+  uint64         created_lt = 3;
+  optional bytes msg_boc = 4;
+}
+
+message TxTreeEntry {
+  Tx              tx = 1;
+  optional uint32 in_tx_pos = 2; // absent for root & initial tx
+  repeated uint32 out_txs_pos = 3;
+  bool            emulated = 4;
+}
+
+message SyncStatus {
+  sint32 initial_seqno = 1;
+  uint32 full_synced_seqno = 2;
+  // Unix timestamp of the masterchain block at full_synced_seqno.
+  uint32 full_synced_seqno_utime = 3;
+  uint32 last_seen_seqno = 4;
+  uint32 last_seen_seqno_utime = 5;
+  uint32 sync_utime = 100;
+}
+
+message AddressLT {
+  string address = 1;
+  uint64 lt = 2;
+}
+
+message TxQuery {
+  // Optional extra filter for query results.
+  optional string address = 1;
+
+  oneof value {
+    bytes tx_hash = 2;
+    bytes in_msg_hash = 3;
+    bytes in_msg_hash_normalized = 4;
+    // Searches tx_hash, in_msg_hash and in_msg_hash_normalized concurrently.
+    // Returns the first match; no priority is guaranteed if multiple indexes match.
+    bytes any_hash = 5;
+    uint64 query_id = 6;
+  }
+
+  // Return txs with utime >= from_utime. 0 by default.
+  optional uint32 from_utime = 100;
+}
+
+message StorageInfo {
+  uint32 last_paid_ts = 1;
+  uint64 price_ps = 2;
+  uint64 due_payment = 3;
+}
+
+enum ContractTrait {
+Unknown = 0;
+System = 1;
+Elector = 2;
+Config = 3;
+LogTest = 4;
+JettonMaster = 5;
+JettonWallet = 6;
+NftItem = 7;
+NftCollection = 8;
+WalletAny = 9;
+WalletV1 = 10;
+WalletV2 = 11;
+WalletV3 = 12;
+WalletV4 = 13;
+WalletV5 = 14;
+WalletHighloadV1 = 15;
+WalletHighloadV2 = 16;
+}
+
+message AccountState {
+  uint32 mc_seqno = 1;
+  bytes shard_account_boc = 2;
+  repeated ContractTrait traits = 3;
+}
+
+// User-friendly account state corresponding to the transaction.
+message AccountParsed {
+  optional bytes code = 1;
+  optional bytes data = 2;
+  uint64 last_tx_lt = 3;
+  bytes last_tx_hash = 4;
+  uint64 balance = 5;
+  optional StorageInfo storage_info = 6;
+  optional bytes frozen_hash = 7;
+  optional bytes code_hash = 8;
+  repeated ContractTrait traits = 9;
+}

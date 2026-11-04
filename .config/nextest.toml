@@ -1,0 +1,9 @@
+[profile.ci]
+retries = 0
+fail-fast = false
+slow-timeout = { period = "15s", terminate-after = 4 }
+
+# For an explicitly selected disposable-service harness, never ordinary CI.
+[profile.local-services]
+retries = 0
+slow-timeout = { period = "30s", terminate-after = 6 }

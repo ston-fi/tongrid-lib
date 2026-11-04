@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+import "tongrid/v3/response_params.proto";
+import "tongrid/v3/types.proto";
+
+service EmulationGrpc {
+  rpc EmulateGetMethod(EmulateGetMethodRequest) returns (EmulateGetMethodResponse) {}
+  rpc EmulateTxTree(EmulateTxTreeRequest) returns (EmulateTxTreeResponse) {}
+}
+
+message EmulateRunMethodState {
+  string address = 1;
+  bytes code_boc = 2;
+  bytes data_boc = 3;
+  uint64 balance = 4;
+}
+
+message EmulateGetMethodRequest {
+  // Emulation is performed considering specified mc_seqno as blockchain head.
+  uint32 mc_seqno = 1;
+
+  oneof contract_state {
+    // Get latest state of specified address at mc_seqno height.
+    string address = 2;
+    // Get state by exact address+lt reference.
+    TxQuery tx_query = 3;
+    AddressLT address_lt = 4;
+    EmulateRunMethodState custom = 5;
+  }
+
+  oneof method_id {
+    string method_id_str = 10;
+    int32 method_id_int = 11;
+  }
+
+  optional bytes stack_boc = 20;
+  // Libraries are resolved by content hash without deployment-history filtering.
+  reserved 30;
+  reserved "immortal_libs";
+}
+
+message EmulateGetMethodSuccess {
+  int32 exit_code = 1;
+  bytes stack_boc = 2;
+}
+
+message EmulateGetMethodError {
+  optional int32 exit_code = 1;
+  string emulator_response_json = 2;
+}
+
+message EmulateGetMethodResponse {
+  oneof emulate_get_method_result {
+    EmulateGetMethodSuccess success = 1;
+    EmulateGetMethodError error = 2;
+  }
+}
+
+message EmulateTxTreeRequest {
+  // Blockchain head used to resolve initial account states and config for emulation.
+  uint32 mc_seqno = 1;
+
+  // Order is preserved and used when forming initial tx positions.
+  // Server limits depth and messages per level (default: 30 each).
+  // Exceeding either limit returns RESOURCE_EXHAUSTED.
+  repeated bytes in_msgs_boc = 2;
+
+  bool adjust_creation_info = 3;
+
+  // Optional emulation unix time (seconds). If not set, server current time is used.
+  optional uint32 emulation_utime = 4;
+
+  // If true, signature checks are skipped during emulation (debug/testing use).
+  optional bool ignore_checksig = 5;
+
+  optional TxResponseParams tx_response_params = 10;
+}
+
+message EmulateTxTreeResponse {
+  repeated TxTreeEntry txs = 1;
+  repeated uint32 initial_tx_positions = 2;
+  repeated uint32 final_states_positions = 3;
+}

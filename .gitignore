@@ -1,0 +1,9 @@
+/target/
+/.tools/
+/.venv/
+**/__pycache__/
+*.pyc
+.DS_Store
+.idea/
+.env
+.env.*

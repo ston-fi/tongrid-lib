@@ -1,0 +1,42 @@
+[package]
+name = "tongrid_account_handler"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+tongrid_db.workspace = true
+tongrid_ton.workspace = true
+tongrid_tda.workspace = true
+tongrid_core.workspace = true
+stonfi_distributed_sync.workspace = true
+ton.workspace = true
+stonfi_metrics.workspace = true
+
+# External
+anyhow.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+log.workspace = true
+prometheus.workspace = true
+tokio.workspace = true
+humantime-serde.workspace = true
+base64.workspace = true
+strum.workspace = true
+serde.workspace = true
+moka.workspace = true
+serde_json.workspace = true
+bincode.workspace = true
+
+[dev-dependencies]
+hex.workspace = true
+tokio-test.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["humantime-serde"]

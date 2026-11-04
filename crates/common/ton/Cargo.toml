@@ -1,0 +1,40 @@
+[package]
+name = "tongrid_ton"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+tongrid_core.workspace = true
+ton = { workspace = true, features = ["tonlibjson"] }
+
+stonfi_metrics.workspace = true
+stonfi_sync_core.workspace = true
+
+# External
+serde = { workspace = true, features = ["derive"] }
+anyhow.workspace = true
+tokio = { workspace = true, features = ["full"] }
+async-trait.workspace = true
+ton_block = { version = "1.9.73", git = "https://github.com/ston-fi/ton-labs-block.git", rev = "905fec1eee03d6e140805d49d8433a5e62bcf7f2", features = ["ton"] }
+itertools.workspace = true
+async-recursion.workspace = true
+futures.workspace = true
+log.workspace = true
+prometheus.workspace = true
+humantime-serde.workspace = true
+num-bigint.workspace = true
+
+[dev-dependencies]
+tokio-test.workspace = true
+tongrid_test_utils.workspace = true
+hex.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["humantime-serde"]

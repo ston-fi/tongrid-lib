@@ -1,0 +1,71 @@
+name: Build-Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  rust:
+    name: Clippy, build and unit tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      RUST_VERSION: 1.97.1
+      CARGO_PROFILE_DEV_DEBUG: 0
+      CARGO_PROFILE_TEST_DEBUG: 0
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install Rust and protoc
+        run: |
+          rustup toolchain install "$RUST_VERSION" --profile minimal --component clippy
+          python3 .ci/install_protoc.py
+          echo "PROTOC=$GITHUB_WORKSPACE/.tools/protoc/bin/protoc" >> "$GITHUB_ENV"
+          echo "PROTOC_INCLUDE=$GITHUB_WORKSPACE/.tools/protoc/include" >> "$GITHUB_ENV"
+      - name: Install native prerequisites
+        run: |
+          curl --fail --silent --show-error --location https://apt.llvm.org/llvm-snapshot.gpg.key -o /tmp/llvm-key.asc
+          echo "8b2a587ffd672c4687e7581dad4b2f6c1bb2ad6b480cd9771ba2ff48e0b8c75d  /tmp/llvm-key.asc" | sha256sum --check
+          sudo gpg --dearmor --yes --output /usr/share/keyrings/llvm-21.gpg /tmp/llvm-key.asc
+          echo "deb [signed-by=/usr/share/keyrings/llvm-21.gpg] https://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm-21.list
+          sudo apt-get update
+          sudo apt-get install -y clang-21 cmake pkg-config libssl-dev libsodium-dev libsecp256k1-dev liblz4-dev zlib1g-dev automake autoconf libtool
+          echo "NATIVE_CPP_TOOLCHAIN_HASH=$(clang-21 --version | sha256sum | cut -d' ' -f1)" >> "$GITHUB_ENV"
+      - name: Cache dependencies and builds
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            ~/.cargo/registry
+            target
+          key: rust-${{ runner.os }}-${{ runner.arch }}-${{ env.RUST_VERSION }}-native-all-nodebug-${{ env.NATIVE_CPP_TOOLCHAIN_HASH }}-${{ hashFiles('Cargo.lock', 'Cargo.toml', 'crates/**/Cargo.toml', 'rust-toolchain.toml', '.ci/protoc.json', '.ci/native.json') }}
+      - name: Prepare native sources
+        run: |
+          python3 .ci/prepare_native.py
+          echo "TON_MONOREPO_DIR=$GITHUB_WORKSPACE/target/native-ton" >> "$GITHUB_ENV"
+      - name: Clippy
+        run: cargo +"$RUST_VERSION" clippy --workspace --all-targets --all-features --locked -- -D warnings
+      - name: Build
+        run: cargo +"$RUST_VERSION" build --workspace --all-targets --all-features --locked
+      - name: Unit tests
+        run: cargo +"$RUST_VERSION" test --workspace --lib --all-features --locked
+  release:
+    if: >-
+      ${{ !cancelled() && needs.rust.result == 'success' &&
+          github.repository == 'ston-fi/tongrid-lib' && github.ref == 'refs/heads/main' &&
+          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    needs: rust
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    uses: ./.github/workflows/release.yml

@@ -1,0 +1,38 @@
+[workspace]
+git_only = true
+publish = false
+release_always = false
+semver_check = false
+dependencies_update = false
+git_tag_name = "v{{ version }}"
+git_release_name = "v{{ version }}"
+git_tag_enable = false
+git_release_enable = false
+changelog_update = false
+pr_name = "chore: release v{{ version }}"
+
+# Every package inherits workspace.package.version; the facade owns one release.
+[[package]]
+name = "tongrid_lib"
+git_tag_enable = true
+git_release_enable = true
+changelog_update = true
+changelog_path = "CHANGELOG.md"
+changelog_include = [
+    "tongrid_core",
+    "tongrid_test_utils",
+    "tongrid_proto",
+    "tongrid_client",
+    "tongrid_ton",
+    "tongrid_db",
+    "tongrid_tda",
+    "tongrid_grpc_server",
+    "tongrid_api_grpc_service_v3",
+    "tongrid_mem_store",
+    "tongrid_account_handler",
+    "tongrid_block_handler",
+    "tongrid_classifier_handler",
+    "tongrid_jetton_handler",
+    "tongrid_backup_handler",
+    "tongrid_verifier_handler",
+]

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+service LibraryGrpc {
+  // Look up stored code by hash, including ordinary contract and private library cells.
+  // Unknown hashes are omitted; input order and duplicates are preserved.
+  // This database-only lookup does not certify public-library deployment.
+  rpc GetLibraries(GetLibrariesRequest) returns (GetLibrariesResponse) {}
+}
+
+message Library {
+  bytes hash = 1;
+  bytes boc = 2;
+  reserved 3;
+  reserved "availability_ranges";
+}
+
+message GetLibrariesRequest {
+  // Deprecated and ignored: content lookup has no historical availability filter or sync wait.
+  uint32 mc_seqno = 1 [deprecated = true];
+  reserved 2;
+  reserved "available_at_mc_seqno";
+  // Maximum library IDs per request is configured by the server (default: 1000).
+  repeated bytes lib_ids = 3;
+}
+
+message GetLibrariesResponse {
+  repeated Library libraries = 1;
+}

@@ -1,0 +1,48 @@
+[package]
+name = "tongrid_db"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[features]
+test-support = ["dep:tongrid_test_utils"]
+
+[dependencies]
+tongrid_test_utils = { workspace = true, optional = true, features = ["scylla"] }
+stonfi_scylla_client.workspace = true
+stonfi_metrics.workspace = true
+stonfi_sync_core = { workspace = true, features = ["scylla"] }
+tongrid_proto.workspace = true
+tongrid_core.workspace = true
+ton.workspace = true
+
+anyhow.workspace = true
+async-trait.workspace = true
+futures.workspace = true
+log.workspace = true
+function_name.workspace = true
+scylla.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+strum.workspace = true
+strum_macros.workspace = true
+tokio.workspace = true
+dashmap.workspace = true
+const_format.workspace = true
+moka.workspace = true
+num-bigint.workspace = true
+fastnum.workspace = true
+num-traits.workspace = true
+include_dir.workspace = true
+
+
+[dev-dependencies]
+tongrid_db = { path = ".", version = "0.2.0", features = ["test-support"] }
+bytes.workspace = true
+tokio-test.workspace = true
+tongrid_test_utils.workspace = true

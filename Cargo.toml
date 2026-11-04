@@ -1,0 +1,109 @@
+[workspace]
+resolver = "2"
+# Add only reviewed, real packages. Keep this list explicit.
+members = [
+    "crates/api/grpc_server",
+    "crates/api/grpc_service_v3",
+    "crates/api/mem_store",
+    "crates/common/core",
+    "crates/common/db",
+    "crates/common/tda",
+    "crates/common/test_utils",
+    "crates/common/ton",
+    "crates/public/tongrid_lib",
+    "crates/public/tongrid_client",
+    "crates/public/tongrid_proto",
+    "crates/sync_handlers/account",
+    "crates/sync_handlers/backup",
+    "crates/sync_handlers/block",
+    "crates/sync_handlers/classifier",
+    "crates/sync_handlers/jetton",
+    "crates/sync_handlers/verifier"
+]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.95.0"
+license = "Apache-2.0"
+authors = ["Sild <silddev@pm.com>"]
+repository = "https://github.com/ston-fi/tongrid-lib"
+publish = false
+
+[workspace.dependencies]
+# Internal
+tongrid_core = { path = "crates/common/core", version = "0.2.0" }
+tongrid_test_utils = { path = "crates/common/test_utils", version = "0.2.0" }
+tongrid_tda = { path = "crates/common/tda", version = "0.2.0" }
+tongrid_ton = { path = "crates/common/ton", version = "0.2.0" }
+tongrid_db = { path = "crates/common/db", version = "0.2.0" }
+tongrid_proto = { path = "crates/public/tongrid_proto", version = "0.2.0" }
+tongrid_mem_store = { path = "crates/api/mem_store", version = "0.2.0" }
+
+# External
+
+ton = "0.4"
+
+stonfi_scylla_client = "0.2"
+stonfi_metrics = "0.1"
+stonfi_distributed_sync = "0.3"
+stonfi_sync_core = "0.3"
+
+
+anyhow = "1"
+async-recursion = "1"
+async-trait = "0.1"
+base64 = "0.22"
+bincode = "2"
+config = "0.13"
+dashmap = "6"
+derive_setters = "0.1"
+flate2 = { version = "1", features = ["zlib-rs"], default-features = false }
+fs2 = "0.4"
+futures = "0.3"
+futures-util = "0.3"
+function_name="0.3"
+hex = "0.4"
+humantime-serde = "1"
+itertools = "0.14"
+log = "0.4"
+rust-s3 = { version = "0.38", default-features = false, features = ["tokio-native-tls", "fail-on-err"] }
+moka = { version = "0.12", features = ["future"] }
+num-bigint = "0.4"
+fastnum =  { version = "0.7", features = ["numtraits"] }
+prometheus = "0.14"
+rand = "0.10"
+scylla = { version = "1", features = ["num-bigint-04"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+strum = { version = "0.28", features = ["derive"] }
+strum_macros = "0.28"
+tokio = { version = "1", features = ["full"] }
+tokio-test = "0.4"
+tower = { version = "0.5", features = ["make", "util", "buffer", "limit"] }
+tower-layer = "0.3"
+pretty_assertions = "1"
+tokio-stream = "0.1"
+thiserror = "2"
+const_format = "0.2"
+http = "1"
+http-body-util = "0.1"
+hyper = "1"
+bytes = "1"
+num-traits = "0.2"
+include_dir = { version = "0.7", features = ["glob"] }
+parking_lot = "0.12"
+
+
+tonic = "0.14"
+tonic-prost = "0.14"
+tonic-prost-build = "0.14"
+tonic-reflection = "0.14"
+prost = "0.14"
+tonic-middleware = "0.4"
+
+
+
+
+prost-types = "0.14"
+tempfile = "3"

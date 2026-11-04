@@ -1,0 +1,37 @@
+[package]
+name = "tongrid_tda"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[features]
+test-support = ["tongrid_db/test-support", "dep:tongrid_test_utils"]
+
+[dependencies]
+tongrid_test_utils = { workspace = true, optional = true, features = ["scylla"] }
+# Internal
+tongrid_db.workspace = true
+tongrid_ton.workspace = true
+tongrid_core.workspace = true
+ton.workspace = true
+
+
+anyhow.workspace = true
+log.workspace = true
+moka.workspace = true
+tokio.workspace = true
+futures-util.workspace = true
+hex.workspace = true
+
+
+[dev-dependencies]
+tongrid_tda = { path = ".", version = "0.2.0", features = ["test-support"] }
+tongrid_ton.workspace = true
+tokio-test.workspace = true
+tongrid_test_utils.workspace = true
+hex.workspace = true

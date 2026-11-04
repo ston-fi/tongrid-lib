@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+message JettonWalletProto {
+  string wallet_address = 1;
+  bool is_legit = 2;
+  string master_address = 3;
+  string owner_address = 4;
+  sint32 mc_seqno = 5;
+}
+
+message JettonBalanceProto {
+  string wallet_address = 1;
+  sint64 tx_lt = 2;
+  bool is_valid = 3;
+  optional string prev_balance = 4; 
+  optional string balance = 5;      
+  sint64 tx_utime = 6;
+  sint32 mc_seqno = 7;
+}

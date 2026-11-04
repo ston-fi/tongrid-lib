@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+message DBSimpleLibProto {
+  bytes hash = 1;
+  bool public = 2;
+}

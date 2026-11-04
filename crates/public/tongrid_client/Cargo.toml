@@ -1,0 +1,32 @@
+[package]
+name = "tongrid_client"
+description = "Async Tongrid RPC client and TON state/emulation provider"
+readme = "README.md"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+ton.workspace = true
+tongrid_proto.workspace = true
+
+# External
+tonic.workspace = true
+tower.workspace = true
+thiserror.workspace = true
+log.workspace = true
+tokio.workspace = true
+derive_setters.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util"] }
+anyhow.workspace = true
+tokio-test.workspace = true
+futures-util.workspace = true
+tokio-stream = { workspace = true, features = ["net", "sync"] }

@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.png binary
+*.boc binary
+
+# Preserve historical bytes of imported schema inputs, including existing whitespace.
+crates/common/db/migrations/v001_20241113_17_38_00_init_tables.cql whitespace=-blank-at-eol
+crates/sync_handlers/backup/proto/backup/v1/jetton.proto whitespace=-blank-at-eol
+crates/sync_handlers/backup/proto/backup/v1/tx.proto whitespace=-blank-at-eof

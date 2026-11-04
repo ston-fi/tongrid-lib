@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+// Ranges include both bounds. They do not themselves request waiting for future data;
+// waiting is controlled by the RPC's synchronization parameters.
+// Transaction pagination caps the upper bound at the latest account transaction
+// visible at the requested snapshot, rather than waiting for the upper bound.
+// Inclusive Unix timestamp range, in seconds.
+message UtimeRange {
+  uint32 from_utime = 1;
+  uint32 to_utime = 2;
+}
+
+// Inclusive logical-time range.
+message LtRange {
+  uint64 from_lt = 1;
+  uint64 to_lt = 2;
+}
+
+// Inclusive masterchain block sequence-number range.
+message McSeqnoRange {
+  uint32 from_mc_seqno = 1;
+  uint32 to_mc_seqno = 2;
+}

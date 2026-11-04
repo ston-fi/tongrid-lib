@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+import "backup/v1/simple_lib.proto";
+
+message DBTxProto {
+  sint32 mc_seqno = 1;
+  sint32 shard_workchain = 2;
+  sint64 shard_id = 3;
+  sint32 shard_seqno = 4;
+  sint64 tx_lt = 6;
+  string address = 7;
+  bytes tx_hash = 8;
+  sint64 tx_utime = 9;
+  bytes boc_stripped = 11;
+  optional DBMsgProto in_msg = 12;
+  repeated DBMsgProto out_msgs = 13;
+  optional  bytes in_msg_hash = 14;
+  optional  bytes in_msg_hash_normalized = 15;
+  optional DBTxKeyProto initial_tx = 16;
+}
+
+message DBTxKeyProto {
+  sint32 mc_seqno = 1;
+  string address = 2;
+  sint64 tx_lt = 3;
+}
+
+message DBMsgProto {
+  string src = 1;
+  string dst = 2;
+  sint64 created_lt = 3;
+  bytes boc_stripped = 4;
+  optional bytes code_hash = 5;
+  repeated bytes data_lib_ids = 6;
+  repeated DBSimpleLibProto simple_libs = 7;
+  repeated bytes body_lib_ids = 8;
+}
+
+

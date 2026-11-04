@@ -1,0 +1,45 @@
+[package]
+name = "tongrid_backup_handler"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+tongrid_db.workspace = true
+tongrid_proto.workspace = true
+tongrid_core.workspace = true
+tongrid_tda.workspace = true
+stonfi_distributed_sync.workspace = true
+
+# External
+anyhow.workspace = true
+bincode.workspace = true
+flate2.workspace = true
+humantime-serde.workspace = true
+log.workspace = true
+rust-s3.workspace = true
+prost.workspace = true
+tokio.workspace = true
+futures.workspace = true
+serde.workspace = true
+tonic.workspace = true
+tonic-prost.workspace = true
+num-bigint.workspace = true
+async-trait.workspace = true
+ton.workspace = true
+
+[dev-dependencies]
+tokio-test.workspace = true
+tempfile.workspace = true
+
+[build-dependencies]
+tonic-prost-build.workspace = true
+
+[package.metadata.cargo-machete]
+ignored = ["prost"]

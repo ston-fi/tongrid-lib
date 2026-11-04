@@ -1,0 +1,46 @@
+[package]
+name = "tongrid_block_handler"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+tongrid_db.workspace = true
+tongrid_ton.workspace = true
+tongrid_tda.workspace = true
+tongrid_core.workspace = true
+ton.workspace = true
+stonfi_metrics.workspace = true
+moka.workspace = true
+stonfi_distributed_sync.workspace = true
+
+# External
+async-trait.workspace = true
+anyhow.workspace = true
+derive_setters.workspace = true
+futures-util.workspace = true
+itertools.workspace = true
+futures.workspace = true
+prometheus.workspace = true
+tokio.workspace = true
+pretty_assertions.workspace = true
+log.workspace = true
+serde.workspace = true
+parking_lot.workspace = true
+
+
+
+
+[dev-dependencies]
+tongrid_tda = { workspace = true, features = ["test-support"] }
+tongrid_ton.workspace = true
+tokio-test.workspace = true
+tongrid_test_utils.workspace = true
+pretty_assertions.workspace = true
+hex.workspace = true

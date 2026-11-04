@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+import "tongrid/v3/pagination.proto";
+import "tongrid/v3/response_params.proto";
+import "tongrid/v3/types.proto";
+
+service JettonGrpc {
+  // Both methods may return empty JettonBalance field (except master/owner addresses)
+  // Check JettonBalance comment for details
+  rpc GetBalancesByMaster(GetBalancesByMasterRequest) returns (BalancesResponse) {}
+  rpc GetBalancesByOwner(GetBalancesByOwnerRequest) returns (BalancesResponse) {}
+
+  // jetton_balances order in response matches with jetton_wallets order in request
+  rpc GetBalances(GetBalancesRequest) returns (BalancesResponse) {}
+  rpc GetBalanceHistory(GetBalanceHistoryRequest) returns (BalanceHistoryResponse) {}
+}
+
+message GetBalancesByMasterRequest {
+  uint32                                mc_seqno = 1;
+  string                                master_address = 2;
+  optional JettonBalancesResponseParams response_params = 3;
+  // max == default == 1000
+  optional uint32                       limit = 4;
+  optional AddressPaginationParams      address_pagination_params = 5;
+}
+
+message GetBalancesByOwnerRequest {
+  uint32                                mc_seqno = 1;
+  string                                owner_address = 2;
+  optional JettonBalancesResponseParams response_params = 3;
+  // max == default == 1000
+  optional uint32                       limit = 4;
+  optional AddressPaginationParams      address_pagination_params = 5;
+}
+
+message BalancesResponse {
+  repeated JettonBalance                jetton_balances = 1;
+  optional AddressPaginationParams      address_pagination_params = 5;
+}
+
+// All fields (except master/owner addresses) can be None (even if required in response_params)
+// in case if there is no balance record in DB for required mc_seqno
+// Otherwise it's unclear how to fetch only valid data at specific mc_seqno and keep pagination working
+message JettonBalance {
+  optional string master_address = 1;
+  optional string owner_address = 2;
+  optional string wallet_address = 3;
+  optional string balance = 4;
+  optional string prev_balance = 5;
+  optional uint32 tx_mc_seqno = 6;
+  optional uint64 tx_lt = 7;
+  optional uint32 tx_utime = 8;
+}
+
+message JettonWalletId {
+  string master_address = 1;
+  string owner_address = 2;
+}
+
+message GetBalancesRequest {
+  uint32                                mc_seqno = 1;
+  // Maximum wallets per request is configured by the server (default: 1000).
+  repeated JettonWalletId               jetton_wallets = 2;
+  optional JettonBalancesResponseParams response_params = 3;
+}
+
+message GetBalanceHistoryRequest {
+  JettonWalletId            jetton_wallet_id = 1;
+  optional TxPaginationParams pagination_params = 2;
+}
+
+message BalanceHistoryEntry {
+  uint32 mc_seqno = 1;
+  string balance = 2;
+  string prev_balance = 3;
+  uint64 tx_lt = 4;
+  uint32 tx_utime = 5;
+}
+
+message BalanceHistoryResponse {
+  repeated BalanceHistoryEntry entries = 1;
+  optional TxPaginationParams  next_pagination_params = 101;
+}

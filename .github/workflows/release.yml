@@ -1,0 +1,60 @@
+name: Release-plz
+
+on:
+  workflow_call:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: release-plz-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release-plz:
+    if: github.repository == 'ston-fi/tongrid-lib' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install pinned release tool
+        run: |
+          rustup toolchain install 1.97.1 --profile minimal
+          python3 .ci/install_tool.py release-plz-linux-x86_64
+          .tools/release-plz --version
+      - name: Configure git identity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Release merged version PR
+        # git_only and publish=false prohibit registry publication.
+        # release_always=false requires the current commit to belong to a release PR.
+        run: .tools/release-plz release --repo-url "https://github.com/$GITHUB_REPOSITORY"
+        env:
+          GIT_TOKEN: ${{ github.token }}
+      - name: Refresh tags
+        # Tags created through the API must be visible to the next Git-only update.
+        run: git -c credential.helper= -c 'credential.helper=!gh auth git-credential' fetch origin --tags
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Prepare next version PR
+        run: >-
+          .tools/release-plz release-pr
+          --repo-url "https://github.com/$GITHUB_REPOSITORY"
+          --output json > "$RUNNER_TEMP/release-pr.json"
+        env:
+          GIT_TOKEN: ${{ github.token }}
+      - name: Check release PR
+        # GITHUB_TOKEN-created PRs do not emit normal pull_request workflow runs.
+        run: |
+          jq -r '.prs[].head_branch' "$RUNNER_TEMP/release-pr.json" |
+          while IFS= read -r branch; do
+            gh workflow run build.yml --repo "$GITHUB_REPOSITORY" --ref "$branch"
+          done
+        env:
+          GH_TOKEN: ${{ github.token }}

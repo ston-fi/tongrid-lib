@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+// proto messages contain fair description for each scylla table
+import "backup/v1/block.proto";
+import "backup/v1/tx.proto";
+import "backup/v1/account.proto";
+import "backup/v1/tvm_code.proto";
+import "backup/v1/tvm_code_traits.proto";
+import "backup/v1/jetton.proto";
+
+message BackupUnitBlock {
+    repeated DBBlockProto blocks = 1;
+    repeated DBTxProto txs = 2;
+    repeated TvmCodeProto tvm_codes = 3;
+}
+
+message BackupUnitAccount {
+    repeated DBAccountProto accounts = 1;
+    repeated TvmCodeProto tvm_codes = 2;
+}
+
+message BackupUnitClassifier {
+    repeated TvmCodeTraitsProto tvm_code_traits = 1;
+}
+
+message BackupUnitJetton {
+    repeated JettonWalletProto jetton_wallets = 1;
+    repeated JettonBalanceProto jetton_balances = 2;
+}

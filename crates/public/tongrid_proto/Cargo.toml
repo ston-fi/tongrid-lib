@@ -1,0 +1,25 @@
+[package]
+name = "tongrid_proto"
+description = "Tongrid v3 protobuf messages and generated gRPC services"
+readme = "README.md"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+tongrid_core.workspace = true
+tonic.workspace = true
+tonic-prost.workspace = true
+prost.workspace = true
+derive_setters.workspace = true
+
+[build-dependencies]
+tonic-prost-build.workspace = true
+
+[dev-dependencies]
+prost-types.workspace = true

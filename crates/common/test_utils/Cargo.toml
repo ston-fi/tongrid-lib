@@ -1,0 +1,22 @@
+[package]
+name = "tongrid_test_utils"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[features]
+scylla = ["dep:fs2", "dep:log", "dep:rand", "dep:stonfi_scylla_client", "dep:tokio"]
+
+[dependencies]
+anyhow.workspace = true
+ton.workspace = true
+fs2 = { workspace = true, optional = true }
+log = { workspace = true, optional = true }
+rand = { workspace = true, optional = true }
+stonfi_scylla_client = { workspace = true, optional = true }
+tokio = { workspace = true, optional = true }

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+message TvmCodeTraitsProto {
+  bytes code_hash = 1;
+  int32 version = 2;
+  repeated string traits = 3;
+  int32 mc_seqno = 4;
+}

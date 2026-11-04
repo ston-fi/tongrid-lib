@@ -1,0 +1,7 @@
+{
+  "tonlibSys": "2026.10.0",
+  "tonRevision": "857b8a57a178e6ae0fe7fa86e7d81c5233de8560",
+  "tonTag": "v2026.10",
+  "linuxClang": "21",
+  "llvmSigningCertificateSha256": "8b2a587ffd672c4687e7581dad4b2f6c1bb2ad6b480cd9771ba2ff48e0b8c75d"
+}

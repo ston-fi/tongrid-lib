@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+message DBBlockProto {
+  sint32 master_seqno = 1;
+  sint32 workchain = 2;
+  sint64 shard = 3;
+  sint32 seqno = 4;
+  bytes root_hash = 5;
+  bytes file_hash = 6;
+  bytes boc_stripped = 7;
+  sint64 end_lt = 8;
+  sint32 key_block_seqno = 9;
+  sint64 utime = 10;
+  bytes rand_seed = 11;
+}

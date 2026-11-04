@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+import "tongrid/v3/types.proto";
+import "google/protobuf/empty.proto";
+
+service SendMsgGrpc {
+  // alternative for tonlib_api raw.SendMessageReturnHash
+  rpc SendMsgReturnHash(SendMsgReturnHashRequest)  returns (SendMsgReturnHashResponse) {}
+}
+
+message SendMsgReturnHashRequest {
+  bytes body = 1;
+  uint32 timeout_ms = 2;
+}
+
+message SendMsgReturnHashResponse {
+  bytes msg_hash = 1;
+}

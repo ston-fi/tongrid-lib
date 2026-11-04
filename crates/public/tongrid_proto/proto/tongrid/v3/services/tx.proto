@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+import "tongrid/v3/filter.proto";
+import "tongrid/v3/pagination.proto";
+import "tongrid/v3/response_params.proto";
+import "tongrid/v3/types.proto";
+import "tongrid/v3/range.proto";
+
+service TxGrpc {
+  // Response order is unspecified.
+  rpc GetBlocksTxs(GetBlocksTxsRequest) returns (TxsResponse) {}
+  rpc GetTx(GetTxRequest) returns (TxResponse) {}
+  rpc QueryTxs(QueryTxsRequest) returns (TxsResponse) {}
+  rpc GetTxTree(GetTxTreeRequest) returns (GetTxTreeResponse) {}
+  rpc GetInitialTx(GetInitialTxRequest) returns (TxResponse) {}
+  rpc GetTxsByAddress(GetTxsByAddressRequest) returns (GetTxsByAddressResponse) {}
+  rpc GetOngoingTxs(GetOngoingTxsRequest) returns (TxsResponse) {}
+  rpc GetLastTxAtMCSeqno(GetLastTxAtMCSeqnoRequest) returns (TxResponse) {}
+}
+
+message TxResponse {
+  Tx tx = 1;
+}
+
+message TxsResponse {
+  repeated Tx txs = 1;
+}
+
+message GetBlocksTxsRequest {
+  McSeqnoRange seqno_range = 1;
+
+  optional TxResponseParams tx_response_params = 10;
+  optional TxFilter filter = 11;
+}
+
+message GetTxRequest {
+  AddressLT address_lt = 1;
+
+  optional TxResponseParams tx_response_params = 10;
+}
+
+message QueryTxsRequest {
+  // Only transactions at or below full_synced_seqno are returned, regardless of response fields.
+  TxQuery tx_query = 1;
+  // Shared wait budget for a matching transaction to become fully synced.
+  // Zero returns immediately with any currently available matches, possibly none.
+  uint32 wait_timeout_ms = 2;
+
+  optional TxResponseParams tx_response_params = 10;
+}
+
+message GetTxTreeRequest {
+  AddressLT tx_id = 1;
+  // Traversal stops at the requested depth or the end of the tree.
+  // Actual depth or level width exceeding server limits (default: 30 each)
+  // within the requested traversal returns RESOURCE_EXHAUSTED.
+  uint32 in_depth = 2;
+  uint32 out_depth = 3;
+
+  optional TxResponseParams tx_response_params = 10;
+
+  // If true and stored tree is ongoing, backend emulates missing continuation
+  // to return the end of the tx tree.
+  optional bool emulate_ongoing_end = 11;
+}
+
+message GetTxTreeResponse {
+  repeated TxTreeEntry txs = 1;
+  uint32 requested_tx_pos = 2;
+  uint32 root_tx_pos = 3;
+  optional uint32 initial_tx_pos = 4; // may be empty if in_depth < tx_tree height
+  bool completed = 5; // false if tree leafs contain outbound messages
+}
+
+message GetInitialTxRequest {
+  AddressLT tx_id = 1;
+
+  optional TxResponseParams tx_response_params = 10;
+}
+
+message GetTxsByAddressRequest {
+  string address = 1;
+  TxPaginationParams pagination_params = 2;
+
+  optional TxResponseParams tx_response_params = 10;
+}
+
+message GetTxsByAddressResponse {
+  // Ordered by lt according to the requested pagination order.
+  repeated Tx txs = 1;
+
+  optional TxPaginationParams next_pagination_params = 10;
+}
+
+message GetOngoingTxsRequest {
+  string address = 1;
+
+  optional TxResponseParams tx_response_params = 10;
+}
+
+message GetLastTxAtMCSeqnoRequest {
+  uint32 mc_seqno = 1;
+  string address = 2;
+  optional TxResponseParams tx_response_params = 10;
+}

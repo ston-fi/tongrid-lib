@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+// all fields are false if params message is not specified in request
+message TxResponseParams {
+  bool                  data_required = 1;
+  bool                  in_msg_required = 2;
+  bool                  out_msgs_required = 3;
+  bool                  fees_required = 4;
+  bool                  exit_code_required = 5;
+  bool                  account_required = 6;
+  reserved 7, 8;
+  bool                  account_parsed_required = 9;
+  MsgResponseParams     msg_response_params = 90;
+}
+
+message MsgResponseParams {
+  bool value_required = 1;
+  bool body_required = 2;
+  bool init_state_required = 3;
+}
+
+// all fields are false if params message is not specified in request
+message JettonBalancesResponseParams {
+  bool with_master_address = 1;
+  bool with_owner_address = 2;
+  bool with_jetton_wallet_address = 3;
+  bool with_prev_balance = 4;
+  bool with_tx_lt = 5;
+  bool with_tx_utime = 6;
+  bool with_mc_seqno = 7;
+}

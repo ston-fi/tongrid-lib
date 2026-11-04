@@ -1,0 +1,59 @@
+name: tongrid-sync-demo
+services:
+  scylla:
+    image: scylladb/scylla:6.2.3@sha256:a9d904089abe9a4f8b5b893ebb5b5bf8b5a1bd0dc6658921cf05f89d3712289c
+    command:
+      [
+        "--smp",
+        "1",
+        "--memory",
+        "1536M",
+        "--overprovisioned",
+        "1",
+        "--developer-mode",
+        "1",
+      ]
+    ports:
+      - "127.0.0.1:19042:9042"
+    volumes:
+      - scylla-data:/var/lib/scylla
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "cqlsh $$HOSTNAME 9042 -e 'SELECT release_version FROM system.local' >/dev/null 2>&1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+  s3:
+    image: ghcr.io/getmoto/motoserver:5.1.3@sha256:c96adff67d2bf82c3a61a6f1155db5300be44d82a9403919a6ff994d0e5438b7
+    ports:
+      - "127.0.0.1:${S3_PORT:-19000}:5000"
+    # Create the test bucket only when missing; readiness checks preserve objects.
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - |
+          import urllib.error
+          import urllib.request
+          url = "http://127.0.0.1:5000/tongrid-test"
+          try:
+              with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=2):
+                  pass
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise
+              with urllib.request.urlopen(urllib.request.Request(url, data=b"", method="PUT"), timeout=2):
+                  pass
+          with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=2):
+              pass
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+volumes:
+  scylla-data:

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+// Different filter types are combined with AND.
+message TxFilter {
+  repeated bytes account_code_hashes = 1;
+
+  // If true, return only latest tx per affected address in the selected block range.
+  // false by default.
+  optional bool latest_per_address = 2;
+}

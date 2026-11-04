@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+import "tongrid/v3/range.proto";
+
+message TxPaginationParams {
+  oneof range {
+    LtRange lt_range = 1;
+    UtimeRange utime_range = 2;
+    McSeqnoRange mc_seqno_range = 3;
+  }
+  uint64 limit = 10; // max 1000
+  optional bool order_desc = 11; // returns data in desc order (by lt)
+}
+
+message AddressPaginationParams {
+  optional string after_address = 1;
+  optional uint32 limit = 2; // max == default == 1000
+}

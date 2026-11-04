@@ -1,0 +1,37 @@
+[package]
+name = "tongrid_grpc_server"
+
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+[dependencies]
+# Internal
+tongrid_core.workspace = true
+stonfi_metrics.workspace = true
+
+# External
+anyhow.workspace = true
+log.workspace = true
+tonic.workspace = true
+prometheus.workspace = true
+tonic-reflection.workspace = true
+tonic-middleware.workspace = true
+serde.workspace = true
+tokio.workspace = true
+tokio-stream.workspace = true
+tower-layer.workspace = true
+rand.workspace = true
+tower.workspace = true
+http.workspace = true
+http-body-util.workspace = true
+hyper.workspace = true
+bytes.workspace = true
+parking_lot.workspace = true
+
+[dev-dependencies]
+tokio-test.workspace = true

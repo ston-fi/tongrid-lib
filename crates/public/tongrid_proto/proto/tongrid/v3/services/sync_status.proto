@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package tongrid.v3;
+
+import "tongrid/v3/types.proto";
+import "google/protobuf/empty.proto";
+
+service SyncStatusGrpc {
+  rpc GetSyncStatus(google.protobuf.Empty)  returns (SyncStatusResponse) {}
+  // error if waiting failed in timeout
+  rpc WaitSyncedSeqno(WaitSyncedSeqnoRequest) returns (SyncStatusResponse) {}
+  rpc StreamSyncStatus(google.protobuf.Empty) returns (stream SyncStatusResponse) {}
+}
+
+
+message WaitSyncedSeqnoRequest {
+  uint32 mc_seqno = 1;
+  uint32 wait_timeout_ms = 2;
+}
+
+message SyncStatusResponse {
+  SyncStatus sync_status = 100;
+}

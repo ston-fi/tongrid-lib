@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package tongrid_backup.v1;
+
+message TvmCodeProto {
+  bytes hash = 1;
+  bytes boc = 2;
+  repeated bytes lib_ids = 3;
+}
