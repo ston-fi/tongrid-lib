@@ -4,6 +4,7 @@ use anyhow::bail;
 use futures::{stream::FuturesUnordered, StreamExt};
 use std::cmp::min;
 use stonfi_scylla_client::client::ScyllaClient;
+use tongrid_core::math::clamp_u32_to_i32_max;
 
 pub const MAX_LIMIT: i64 = 1000;
 
@@ -198,7 +199,7 @@ impl<'a> TxKeyLookup<'a> {
                 address,
                 to_mc_seqno,
             } => {
-                let to_mc_seqno = *to_mc_seqno as i32;
+                let to_mc_seqno = clamp_u32_to_i32_max(*to_mc_seqno) as i32;
                 scylla
                     .select_one(query, (address, to_mc_seqno), table)
                     .await?
