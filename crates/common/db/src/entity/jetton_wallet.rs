@@ -123,6 +123,9 @@ impl<'a> JettonWalletMapper<'a> {
         limit: Option<i32>,
     ) -> anyhow::Result<Vec<DBJettonWallet>> {
         let real_limit = min(MAX_LIMIT as i32, limit.unwrap_or(MAX_LIMIT as i32));
+        if real_limit <= 0 {
+            return Ok(vec![]);
+        }
         let (key_field, other_field) = match table_name {
             Self::TABLE_NAME_BY_MASTER => ("master_address", "owner_address"),
             Self::TABLE_NAME_BY_OWNER => ("owner_address", "master_address"),

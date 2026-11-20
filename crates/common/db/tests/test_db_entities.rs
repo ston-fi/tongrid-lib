@@ -186,6 +186,8 @@ async fn assert_transaction(db: &DB) -> anyhow::Result<()> {
     // TxKeyLookup::AddressLatest
     let lookup_key = TxKeyLookup::address_latest(address, my_txs[0].mc_seqno);
     assert_eq!(&db.tx().lookup(lookup_key).await?, &my_txs[2]);
+    let lookup_key = TxKeyLookup::address_latest(address, u32::MAX);
+    assert_eq!(&db.tx().lookup(lookup_key).await?, &my_txs[2]);
 
     // TxKeyLookup::AddressLTRange
     let mut lt_page = LTPage {
@@ -377,6 +379,9 @@ async fn assert_jetton_wallet(db: &DB) -> anyhow::Result<()> {
     assert_eq!(master_wallets.as_slice(), &wallets[1..=2]);
 
     let master_wallets = mapper.get_legit_by_master("3", None, Some(1)).await?;
+    assert_eq!(master_wallets.len(), 0);
+
+    let master_wallets = mapper.get_legit_by_master("2", None, Some(0)).await?;
     assert_eq!(master_wallets.len(), 0);
 
     let master_wallets = mapper.get_legit_by_owner("3", None, Some(1)).await?;
